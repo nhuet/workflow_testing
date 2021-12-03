@@ -21,6 +21,34 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Tests
+        run: |
+          echo $GITHUB_REF
+          echo ${{ github.ref }}
+          echo ${{ github.ref_name }}
+          echo ${{ github.head_ref }}
+          echo ${{ github.base_ref }}
+          echo ${{ github.repository }}
+          echo $GITHUB_REPOSITORY
+
+          echo "******** BINDER *********"
+          git checkout binder
+          ls
+          echo ${{ github.sha }} > sha1.txt
+          git add sha1.txt
+          git config user.name "Binder Bot"
+          git commit -m "edit sha1"
+          git push origin binder
+
+
+          echo "******** CURRENT REF *********"
+          LOCAL_REF=${GITHUB_REF/refs\//}
+          echo LOCAL_REF=$LOCAL_REF
+          git checkout ${LOCAL_REF}
+          ls
 
       - name: Set env variables for github+binder links in doc
         run: |
@@ -53,6 +81,8 @@ jobs:
           echo ${AUTODOC_NOTEBOOKS_REPO_URL}
           echo ${AUTODOC_NOTEBOOKS_BRANCH}
 
+          echo nb_branch: ${{ env.AUTODOC_NOTEBOOKS_BRANCH }}
+
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: echo  ${{ github.ref }}
@@ -65,4 +95,3 @@ jobs:
       - name: deploy
         if: ${{ github.ref == 'refs/heads/main' }}
         run: echo deploy
-
