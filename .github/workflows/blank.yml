@@ -26,6 +26,10 @@ jobs:
           submodules: true
           fetch-depth: 0  # fetch all branches
 
+      - name: build master doc (fake it by appending a word)
+        run: |
+          echo "\nyo" >> doc/yo.md
+      
       - name: Deploy documentation in root folder on GH pages 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.5
         with:
@@ -48,7 +52,8 @@ jobs:
           # check if two last commits are for same doc
           last_commit_title=$(git log HEAD -1 --format=%s)
           second_to_last_commit_title=$(git log HEAD~1 -1 --format=%s)
-          echo $last_commit_title $second_to_last_commit_title
+          echo $last_commit_title 
+          echo $second_to_last_commit_title
           if [[ $last_commit_title == $second_to_last_commit_title ]]; then
             echo "Merge two last commits"
             git reset --soft HEAD~
