@@ -28,8 +28,9 @@ jobs:
 
       - name: build master doc (fake it by appending a word)
         run: |
-          echo "\nyo" >> doc/yo.md
-      
+          git show origin/gh-pages:yo.md > doc/yo.md
+          echo "yo" >> doc/yo.md
+
       - name: Deploy documentation in root folder on GH pages 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.5
         with:
