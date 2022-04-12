@@ -31,7 +31,7 @@ jobs:
           git checkout gh-pages
           # check if second to last commit was also for master doc
           second_to_last_commit_title=$(git log -1 HEAD~ --format=%s)
-          pattern="publish documentation on master*"
+          pattern="publish documentation for master*"
           if [[ $second_to_last_commit_title == $pattern ]]; then
             # merge last commit with previous one
             git reset --soft HEAD~
