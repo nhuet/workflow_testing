@@ -36,6 +36,12 @@ jobs:
           clean-exclude: |
             "version/*"
 
+      - name: Checkout all branches
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+          fetch-depth: 0  # fetch all branches
+
       - name: Squash last master doc commits on gh_pages
         run: |
           git checkout gh-pages
