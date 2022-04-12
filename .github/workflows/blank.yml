@@ -45,13 +45,12 @@ jobs:
       - name: Squash last master doc commits on gh_pages
         run: |
           git checkout gh-pages
-          # check if second to last commit was also for master doc
+          # check if two last commits are for same doc
+          last_commit_title=$(git log HEAD -1 --format=%s)
           second_to_last_commit_title=$(git log HEAD~1 -1 --format=%s)
-          echo $second_to_last_commit_title
-          pattern="publish documentation for master*"
-          if [[ $second_to_last_commit_title == $pattern ]]; then
-            echo "merge two last commits"
-            # merge last commit with previous one
+          echo $last_commit_title $second_to_last_commit_title
+          if [[ $last_commit_title == $second_to_last_commit_title ]]; then
+            echo "Merge two last commits"
             git reset --soft HEAD~
             git config user.name "Actions"
             git config user.email "actions@github.com"
