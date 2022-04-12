@@ -43,6 +43,7 @@ jobs:
           second_to_last_commit_title=$(git log -1 HEAD~ --format=%s)
           pattern="publish documentation for master*"
           if [[ $second_to_last_commit_title == $pattern ]]; then
+            echo "merge two last commits"
             # merge last commit with previous one
             git reset --soft HEAD~
             git config user.name "Actions"
