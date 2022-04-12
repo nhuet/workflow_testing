@@ -20,27 +20,19 @@ jobs:
           BINDER_TAG=binder_${TAG_NAME}
           echo "BINDER_TAG=${BINDER_TAG}" >> $GITHUB_ENV
           echo "SKDECIDE_VERSION=${SKDECIDE_VERSION}" >> $GITHUB_ENV
+          echo "DOCS_VERSION_PATH=/version/$SKDECIDE_VERSION/" >> $GITHUB_ENV
 
-      # Checks-out binder branch
+      # Checks-out current branch
       - uses: actions/checkout@v2
-        with:
-          ref: binder
 
-      - name: Update scikit-decide dependency and tag the environement
-        run: |
-          sed -e "s/scikit-decide\[all\]==.*/scikit-decide\[all\]==${SKDECIDE_VERSION}/" environment.yml > environment.yml.new
-          mv environment.yml.new environment.yml
-          git config user.name "Binder Bot"
-          git config user.email "binder@bot.com"
-          git commit environment.yml -m "Update scikit-decide dependency"
-          git tag -a ${BINDER_TAG} -m "Release binder environment for scikit-decide ${SKDECIDE_VERSION}"
-          git push origin ${BINDER_TAG}
-
-      - name: cache binder build on mybinder.org
-        uses: jupyterhub/repo2docker-action@master
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.5
         with:
-          NO_PUSH: true
-          MYBINDERORG_TAG: ${{ env.BINDER_TAG }}
+          branch: gh-pages # The branch the action should deploy to.
+          folder: doc # The folder the action should deploy.
+          target-folder: ${{ env.DOCS_VERSION_PATH }} # The folder the action should deploy to.
+          commit-message: publish documentation for release ${{ env.SKDECIDE_VERSION }}
+          clean: false # Releasing a new version is about creating a new directory, so we don't want to clean up the root.
 
   build-docs:
     runs-on: ubuntu-latest
