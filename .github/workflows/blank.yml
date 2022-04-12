@@ -39,8 +39,9 @@ jobs:
       - name: Squash last master doc commits on gh_pages
         run: |
           git checkout gh-pages
+          git log HEAD -- -2 --format=%s
           # check if second to last commit was also for master doc
-          second_to_last_commit_title=$(git log HEAD~ -- -1--format=%s)
+          second_to_last_commit_title=$(git log HEAD~ -- -1 --format=%s)
           pattern="publish documentation for master*"
           if [[ $second_to_last_commit_title == $pattern ]]; then
             echo "merge two last commits"
