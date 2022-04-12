@@ -41,10 +41,15 @@ jobs:
           git checkout gh-pages
           echo checkout ok
           git reset --hard origin/gh-pages
-          git log HEAD -2 --format=%s
+          echo reset
+          git log
           echo git log done
+          git log -2 --format=%s
+          echo git log with format done
+          git log HEAD -2 --format=%s
+          echo git log HEAD done
           # check if second to last commit was also for master doc
-          second_to_last_commit_title=$(git log HEAD~1 -1 --format=%s)
+          second_to_last_commit_title=$(git log HEAD\~1 -1 --format=%s)
           echo $second_to_last_commit_title
           pattern="publish documentation for master*"
           if [[ $second_to_last_commit_title == $pattern ]]; then
