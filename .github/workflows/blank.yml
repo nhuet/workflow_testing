@@ -26,6 +26,16 @@ jobs:
           submodules: true
           fetch-depth: 0  # fetch all branches
 
+      - name: Deploy documentation in root folder on GH pages 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.5
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: doc # The folder the action should deploy.
+          target-folder: / # The folder the action should deploy to.
+          commit-message: publish documentation for master
+          clean-exclude: |
+            "version/*"
+
       - name: Squash last master doc commits on gh_pages
         run: |
           git checkout gh-pages
