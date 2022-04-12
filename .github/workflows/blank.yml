@@ -20,7 +20,20 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - name: Checkout all branches
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+          fetch-depth: 0  # fetch all branches
+
+      - name: Squash commits on gh_pages
+        run: |
+          git checkout gh-pages
+          git reset --soft HEAD~
+          git config user.name "Actions"
+          git config user.email "actions@github.com"
+          git commit --amend -m "publish documentation for master"
+          git push -f origin gh-pages
 
       - name: Tests
         run: |
