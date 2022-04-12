@@ -26,14 +26,20 @@ jobs:
           submodules: true
           fetch-depth: 0  # fetch all branches
 
-      - name: Squash commits on gh_pages
+      - name: Squash last master doc commits on gh_pages
         run: |
           git checkout gh-pages
-          git reset --soft HEAD~
-          git config user.name "Actions"
-          git config user.email "actions@github.com"
-          git commit --amend -m "publish documentation for master"
-          git push -f origin gh-pages
+          # check if second to last commit was also for master doc
+          second_to_last_commit_title=$(git log -1 HEAD~ --format=%s)
+          pattern="publish documentation on master*"
+          if [[ second_to_last_commit_title == $pattern ]]; then
+            # merge last commit with previous one
+            git reset --soft HEAD~
+            git config user.name "Actions"
+            git config user.email "actions@github.com"
+            git commit --amend -m "publish documentation for master"
+            git push -f origin gh-pages
+          fi
 
       - name: Tests
         run: |
