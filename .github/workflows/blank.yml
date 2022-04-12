@@ -32,7 +32,7 @@ jobs:
           # check if second to last commit was also for master doc
           second_to_last_commit_title=$(git log -1 HEAD~ --format=%s)
           pattern="publish documentation on master*"
-          if [[ second_to_last_commit_title == $pattern ]]; then
+          if [[ $second_to_last_commit_title == $pattern ]]; then
             # merge last commit with previous one
             git reset --soft HEAD~
             git config user.name "Actions"
@@ -40,6 +40,7 @@ jobs:
             git commit --amend -m "publish documentation for master"
             git push -f origin gh-pages
           fi
+
 
       - name: Tests
         run: |
