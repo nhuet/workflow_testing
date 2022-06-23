@@ -12,6 +12,23 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  matrix-testing:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ "ubuntu-latest", "macos-latest"]
+        python-version: [ "3.7", "3.8"]
+        include:
+          - os: "ubuntu-latest"
+            minizinc_path: $(pwd)/bin
+          - os: "macos-latest"
+            minizinc_path: $(pwd)/bin/MiniZincIDE.app/Contents/Resources
+          - color: "green"
+            color-details: "green like a big apple"
+    steps:
+      - name: on teste la matrice
+        run: echo ${{ matrix }}
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
