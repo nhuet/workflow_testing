@@ -26,9 +26,13 @@ jobs:
             minizinc_path: $(pwd)/bin/MiniZincIDE.app/Contents/Resources
           - color: "green"
             color-details: "green like a big apple"
+          - color: "blue"
+            color-details: "like the sky"
     steps:
       - name: on teste la matrice
-        run: echo ${{ matrix }}
+        run: |
+          echo ${{ matrix.color }}
+          echo ${{ matrix.color-details }}
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
