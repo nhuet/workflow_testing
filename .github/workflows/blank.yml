@@ -19,20 +19,20 @@ jobs:
       matrix:
         os: [ "ubuntu-latest", "macos-latest"]
         python-version: [ "3.7", "3.8"]
-#        color: ["green", "blue"]
+        color: ["blue"]
         include:
           - os: "ubuntu-latest"
             minizinc_path: $(pwd)/bin
           - os: "macos-latest"
             minizinc_path: $(pwd)/bin/MiniZincIDE.app/Contents/Resources
-          - color: "green"
-            color-details: "green like a big apple"
           - color: "blue"
             color-details: "like the sky"
           - os: "ubuntu-latest"
             python-version: "3.7"
-            color: ["blue", "green"]
-            
+            color: "green"
+            color-details: "green like a big apple"
+
+
     steps:
       - name: on teste la matrice
         run: |
