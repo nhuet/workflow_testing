@@ -31,8 +31,8 @@ jobs:
             color-details: "like the sky"
           - os: "ubuntu-latest"
             python-version: "3.7"
-            color: "green"
-            color-details: "green like a big apple"
+            color: ["blue", "green"]
+            
     steps:
       - name: on teste la matrice
         run: |
