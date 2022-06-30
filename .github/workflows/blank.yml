@@ -22,15 +22,15 @@ jobs:
         color: ["blue"]
         include:
           - os: "ubuntu-latest"
+            python-version: "3.7"
+            color: "green"
+            color-details: "green like a big apple"
+          - os: "ubuntu-latest"
             minizinc_path: $(pwd)/bin
           - os: "macos-latest"
             minizinc_path: $(pwd)/bin/MiniZincIDE.app/Contents/Resources
           - color: "blue"
             color-details: "like the sky"
-          - os: "ubuntu-latest"
-            python-version: "3.7"
-            color: "green"
-            color-details: "green like a big apple"
 
 
     steps:
