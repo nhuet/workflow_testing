@@ -19,7 +19,7 @@ jobs:
       matrix:
         os: [ "ubuntu-latest", "macos-latest"]
         python-version: [ "3.7", "3.8"]
-        color: ["green", "blue"]
+#        color: ["green", "blue"]
         include:
           - os: "ubuntu-latest"
             minizinc_path: $(pwd)/bin
@@ -30,6 +30,7 @@ jobs:
           - color: "blue"
             color-details: "like the sky"
           - os: "ubuntu-latest"
+            python-version: "3.7"
             color: "green"
             color-details: "green like a big apple"
     steps:
