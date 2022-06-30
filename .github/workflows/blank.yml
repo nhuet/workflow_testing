@@ -29,10 +29,14 @@ jobs:
             color-details: "green like a big apple"
           - color: "blue"
             color-details: "like the sky"
+          - os: "ubuntu-latest"
+            color: "green"
+            color-details: "green like a big apple"
     steps:
       - name: on teste la matrice
         run: |
           echo ${{ matrix.color }}
+          echo ${{ matrix.minizinc_path }}
           echo ${{ matrix.color-details }}
   # This workflow contains a single job called "build"
   build:
