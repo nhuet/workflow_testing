@@ -19,26 +19,29 @@ jobs:
       matrix:
         os: [ "ubuntu-latest", "macos-latest"]
         python-version: [ "3.7", "3.8"]
-        color: ["blue"]
+        gurobi: ""
         include:
-          - os: "ubuntu-latest"
-            python-version: "3.7"
-            color: "green"
-            color-details: "green like a big apple"
           - os: "ubuntu-latest"
             minizinc_path: $(pwd)/bin
           - os: "macos-latest"
             minizinc_path: $(pwd)/bin/MiniZincIDE.app/Contents/Resources
-          - color: "blue"
-            color-details: "like the sky"
-
+          - os: "ubuntu-latest"
+            python-version: "3.7"
+            minizinc_path: $(pwd)/bin
+            gurobi: "without gurobi"
 
     steps:
       - name: on teste la matrice
         run: |
-          echo ${{ matrix.color }}
+          echo ${{ matrix.gurobi }}
           echo ${{ matrix.minizinc_path }}
           echo ${{ matrix.color-details }}
+      - name: on teste la matrice avec python
+        shell: python
+        run: |
+          print("${{ matrix.gurobi }}")
+          print("${{ matrix.minizinc_path }}")
+          print("${{ matrix.color-details }}")
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
