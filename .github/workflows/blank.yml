@@ -28,18 +28,18 @@ jobs:
           - os: "ubuntu-latest"
             python-version: "3.7"
             minizinc_path: $(pwd)/bin
-            gurobi: true
+            wo_gurobi: true
 
     steps:
       - name: on teste la matrice
         run: |
-          echo ${{ matrix.gurobi }}
+          echo ${{ matrix.wo_gurobi }}
           echo ${{ matrix.minizinc_path }}
           echo ${{ matrix.color-details }}
       - name: on teste la matrice avec python
         shell: python
         run: |
-          print("${{ matrix.gurobi }}")
+          print("${{ matrix.wo_gurobi }}")
           print("${{ matrix.minizinc_path }}")
           print("${{ matrix.color-details }}")
   # This workflow contains a single job called "build"
