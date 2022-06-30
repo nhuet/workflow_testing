@@ -19,7 +19,7 @@ jobs:
       matrix:
         os: [ "ubuntu-latest", "macos-latest"]
         python-version: [ "3.7", "3.8"]
-        gurobi: [""]
+        wo_gurobi: [false]
         include:
           - os: "ubuntu-latest"
             minizinc_path: $(pwd)/bin
@@ -28,7 +28,7 @@ jobs:
           - os: "ubuntu-latest"
             python-version: "3.7"
             minizinc_path: $(pwd)/bin
-            gurobi: "without gurobi"
+            gurobi: true
 
     steps:
       - name: on teste la matrice
