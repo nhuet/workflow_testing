@@ -40,13 +40,11 @@ jobs:
         run: |
           echo ${{ matrix.wo_gurobi }}
           echo ${{ matrix.minizinc_path }}
-          echo ${{ matrix.color-details }}
-      - name: on teste la matrice avec python
-        shell: python
-        run: |
-          print("${{ matrix.wo_gurobi }}")
-          print("${{ matrix.minizinc_path }}")
-          print("${{ matrix.color-details }}")
+          if [ "${{ matrix.wo_gurobi }}" = "without gurobi" ]; then
+              echo pip install gurobipy
+          fi
+          
+
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
