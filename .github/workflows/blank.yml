@@ -19,7 +19,7 @@ jobs:
       matrix:
         os: [ "ubuntu-latest", "macos-latest"]
         python-version: [ "3.7", "3.8"]
-        gurobi: ""
+        gurobi: [""]
         include:
           - os: "ubuntu-latest"
             minizinc_path: $(pwd)/bin
