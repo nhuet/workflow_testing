@@ -25,6 +25,11 @@ jobs:
             minizinc_path: $(pwd)/bin
           - os: "macos-latest"
             minizinc_path: $(pwd)/bin/MiniZincIDE.app/Contents/Resources
+          - coverage: False
+          - os: "ubuntu-latest"
+            python-version: "3.9"
+            wo_gurobi: ""
+            coverage: True
         exclude:
           - os: "macos-latest"
             wo_gurobi: "without gurobi"
@@ -43,7 +48,10 @@ jobs:
           if [ "${{ matrix.wo_gurobi }}" = "without gurobi" ]; then
               echo pip install gurobipy
           fi
-          
+          echo ${{ matrix.coverage }}
+          if ${{ matrix.coverage }}; then
+            echo "Add a coverage report"
+          fi
 
   # This workflow contains a single job called "build"
   build:
