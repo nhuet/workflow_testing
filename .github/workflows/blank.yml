@@ -25,11 +25,11 @@ jobs:
             minizinc_path: $(pwd)/bin
           - os: "macos-latest"
             minizinc_path: $(pwd)/bin/MiniZincIDE.app/Contents/Resources
-          - coverage: False
+          - coverage: false
           - os: "ubuntu-latest"
             python-version: "3.9"
             wo_gurobi: ""
-            coverage: True
+            coverage: true
         exclude:
           - os: "macos-latest"
             wo_gurobi: "without gurobi"
@@ -52,6 +52,12 @@ jobs:
           if ${{ matrix.coverage }}; then
             echo "Add a coverage report"
           fi
+      - name: on fait pytest normal
+        if: ${{ !matrix.coverage }}
+        run: echo "pytest"
+      - name: on fait pytest avec coverage
+        if: ${{ matrix.coverage }}
+        run: echo "pytest --cov"
 
   # This workflow contains a single job called "build"
   build:
