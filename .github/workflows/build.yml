@@ -39,8 +39,20 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@v2
+      - name: install build dependencies
+        run: pip install -U setuptools wheel
+      - name: Build workflow-testing wheel
+        run: python setup.py bdist_wheel
+      - name: rename dist as wheels
+        run: mv dist wheels
       - name: Create the github release
         uses: softprops/action-gh-release@v1
         with:
-          files: to*
+          files: wheels/*.whl
           generate_release_notes: true
+      - name: Publish package to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+          packages_dir: wheels/
