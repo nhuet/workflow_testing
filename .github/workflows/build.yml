@@ -29,7 +29,7 @@ jobs:
           VERSION=${TAG_NAME/v/}  # stripping "v"
           echo $VERSION
           # Replace in-place version number in package __init__.py, also used by setup.py
-        sed -i -e "s/^__version__\s*=.*$/__version__ = \"${VERSION}\"/g" workflow_testing/__init__.py
+          sed -i -e "s/^__version__\s*=.*$/__version__ = \"${VERSION}\"/g" workflow_testing/__init__.py
           cat workflow_testing/__init__.py
       - name: Build workflow_testing wheel
         run: python setup.py bdist_wheel
