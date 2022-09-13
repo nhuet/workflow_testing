@@ -39,6 +39,15 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@v2
+      - name: Get version number from tag
+        run: |
+          TAG_NAME=${GITHUB_REF/refs\/tags\//}  # stripping "refs/tags/"
+          VERSION=${TAG_NAME/v/}  # stripping "v"
+          echo ::set-output name=VERSION::${VERSION}
+      - name: Set proper version in package __init__.py (used also by setup.py)
+        run: sed -e "s/^__version__\s*=.*$/__version__ = ${VERSION}/g" workflow_testing/__init__.py
+        env:
+          VERSION: ${{ steps.get_version.outputs.VERSION }}
       - name: install build dependencies
         run: pip install -U setuptools wheel
       - name: Build workflow-testing wheel
