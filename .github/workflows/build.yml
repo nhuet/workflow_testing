@@ -48,8 +48,8 @@ jobs:
           echo ::set-output name=VERSION::${VERSION}
       - name: Set proper version in package __init__.py (used also by setup.py)
         run: |
-          sed -e "s/^__version__\s*=.*$/__version__ = ${VERSION}/g" workflow_testing/__init__.py
-          sed -i -e "s/^__version__\s*=.*$/__version__ = ${VERSION}/g" workflow_testing/__init__.py
+          sed -i -e "s/^__version__\s*=.*$/__version__ = \"${VERSION}\"/g" workflow_testing/__init__.py
+          cat workflow_testing/__init__.py
         env:
           VERSION: ${{ steps.get_version.outputs.VERSION }}
       - name: install build dependencies
