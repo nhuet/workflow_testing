@@ -22,21 +22,14 @@ jobs:
         uses: actions/checkout@v2
       - name: Install build dependencies
         run: pip install -U setuptools wheel
-      - name: Update version number, according to pushed tag or `git describe`
+      - name: Update version number according to pushed tag
+        if: startsWith(github.ref, 'refs/tags/v')
         run: |
-          # pushing tag or branch?
-          if  [[ $GITHUB_REF == refs/tags/v* ]];
-          then
-            # pushing tag: ensure using the tag pushed
-            DESCRIBE=${GITHUB_REF/refs\/tags\//}  # stripping "refs/tags/"
-          else
-            # default: use git describe from previous tag matching *glob* pattern "v[0-9]*"
-            DESCRIBE=$(git describe --tags --match="v[0-9]*")
-          fi
-          VERSION=${DESCRIBE/v/}  # stripping "v"
+          TAG_NAME=${GITHUB_REF/refs\/tags\//}  # stripping "refs/tags/"
+          VERSION=${TAG_NAME/v/}  # stripping "v"
           echo $VERSION
           # Replace in-place version number in package __init__.py, also used by setup.py
-          sed -i -e "s/^__version__\s*=.*$/__version__ = \"${VERSION}\"/g" workflow_testing/__init__.py
+        sed -i -e "s/^__version__\s*=.*$/__version__ = \"${VERSION}\"/g" workflow_testing/__init__.py
           cat workflow_testing/__init__.py
       - name: Build workflow_testing wheel
         run: python setup.py bdist_wheel
