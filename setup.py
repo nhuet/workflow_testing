@@ -1,5 +1,7 @@
 from setuptools import find_packages, setup
 
+with open("README.md", "rt") as f:
+    long_description = f.read()
 
 setup(
     name="workflow-testing",
@@ -23,6 +25,9 @@ setup(
         "deprecation",
         "typing-extensions>=4.0",
     ],
+    author="Nolwen",
     license="MIT",
     description="Fake library",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
 )
