@@ -64,7 +64,8 @@ jobs:
           minizinc_path=$(python -c "import workflow_testing, os; print(os.path.abspath(workflow_testing.__path__[0]))")
           cd -
           echo $minizinc_path
-          minizinc_path=/C/hostedtoolcache/windows/Python/3.8.10/x64/lib/site-packages/workflow_testing
+          cygpath --unix $minizinc_path
+          minizinc_path=$(cygpath --unix $minizinc_path)
           echo $minizinc_path
           mv bin/hello $minizinc_path
           ls $minizinc_path
