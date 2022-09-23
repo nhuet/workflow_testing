@@ -41,6 +41,7 @@ jobs:
 
   test:
     runs-on: windows-2022
+    needs: [build]
     defaults:
       run:
         shell: bash
