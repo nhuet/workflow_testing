@@ -59,7 +59,9 @@ jobs:
           python -m pip install wheels/workflow_testing*.whl
       - run: |
           chmod +x bin/hello
+          cd ..
           minizinc_path=$(python -c "import workflow_testing, os; print(os.path.abspath(workflow_testing.__path__[0]))")
+          cd -
           echo $minizinc_path
           mv bin/hello $minizinc_path
           ls $minizinc_path
