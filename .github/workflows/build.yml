@@ -20,6 +20,12 @@ jobs:
     if: false
     steps:
       - run: echo should not run
+  job_depending_on_skipped_test:
+    runs-on: ubuntu-latest
+    needs: hob_always_skppped
+    steps:
+      - run: echo should not run
+
   job_only_on_default1:
     runs-on: ubuntu-latest
     if: $${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
