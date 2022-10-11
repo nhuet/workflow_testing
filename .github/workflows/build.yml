@@ -15,6 +15,21 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  job_only_on_default1:
+    runs-on: ubuntu-latest
+    if: $${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
+    steps:
+      - run: echo should work only on default
+  job_only_on_default2:
+    runs-on: ubuntu-latest
+    if: ${{ github.ref }} == refs/heads/${{ github.event.repository.default_branch }}
+    steps:
+      - run: echo should work only on default 2
+  job_only_on_default3:
+    runs-on: ubuntu-latest
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    steps:
+      - run: echo should work only on default
   build:
     runs-on: ubuntu-latest
     steps:
