@@ -15,6 +15,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  hob_always_skppped:
+    runs-on: ubuntu-latest
+    if: false
+    steps:
+      - run: echo should not run
   job_only_on_default1:
     runs-on: ubuntu-latest
     if: $${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
