@@ -30,13 +30,13 @@ jobs:
 
   job12:
     needs: [job1, job2]
-    if: always()
+    if: always() && contains(needs.*.result, 'success')
     runs-on: ubuntu-latest
     steps:
       - run: |
           echo ${{ needs.job1.result }}
           echo ${{ needs.job2.result }}
-          echo ${{ always() && contains(needs.*.result, 'success') }}
+          echo ${{ contains(needs.*.result, 'success') }}
 
 
   job_for_tags_and_default:
