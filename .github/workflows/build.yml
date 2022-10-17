@@ -16,8 +16,15 @@ concurrency:
 
 jobs:
 
+  job0:
+    if: true
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo called
+
   job1:
     if: false
+    needs: job0
     runs-on: ubuntu-latest
     steps:
       - run: echo never called
