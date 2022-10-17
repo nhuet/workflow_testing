@@ -30,7 +30,7 @@ jobs:
 
   job12:
     needs: [job1, job2]
-    if: always() && contains(needs.*.result, 'success')
+    if: always() && contains(needs.*.result, 'success')   # trigger even if only one needed job successed (e.g. the other one being skipped)
     runs-on: ubuntu-latest
     steps:
       - run: |
