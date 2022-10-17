@@ -36,7 +36,7 @@ jobs:
       - run: |
           echo ${{ needs.job1.result }}
           echo ${{ needs.job2.result }}
-          echo ${{ contains(needs.*.result, 'success') }}
+          echo ${{ always() && contains(needs.*.result, 'success') }}
 
 
   job_for_tags_and_default:
