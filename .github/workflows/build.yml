@@ -30,7 +30,7 @@ jobs:
       - run: echo never called
 
   job2:
-    if: false
+    if: true
     runs-on: ubuntu-latest
     steps:
       - run: echo never called
