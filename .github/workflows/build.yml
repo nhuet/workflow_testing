@@ -54,7 +54,16 @@ jobs:
       - run: |
           echo this is a push on default branch
           
-
+  job_only_default_branch_or_release:
+    runs-on: ubuntu-latest
+    needs: trigger
+    if: |
+      (needs.trigger.outputs.is_push_on_default_branch == 'true')
+      || (needs.trigger.outputs.is_release == 'true')
+    steps:
+      - run: |
+          if ${{ needs.trigger.outputs.is_release }}; then echo this is a release; fi
+          if ${{ needs.trigger.outputs.is_push_on_default_branch }}; then echo this is a push on default branch; fi
   job0:
     if: true
     runs-on: ubuntu-latest
