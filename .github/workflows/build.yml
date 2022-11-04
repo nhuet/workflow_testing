@@ -28,7 +28,22 @@ jobs:
           echo "is_release=${{ startsWith(github.ref, 'refs/tags/v') }}" >> $GITHUB_OUTPUT
           echo "is_push_on_default_branch=${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}" >> $GITHUB_OUTPUT
           
-          
+  build:
+    runs-on: ubuntu-latest
+    needs: [trigger]
+    steps:
+      - name: get wheel version and save it
+        id: get_wheel_version
+        run: |
+          if ${{ needs.trigger.outputs.is_release }}; then 
+            version=${GITHUB_REF/refs\/tags\/v/}  # stripping "refs/tags/v" 
+          else
+            version="0.0.0"
+          fi
+          echo "version=$version"
+          echo "version=$version" >> $GITHUB_OUTPUT      
+    
+
   create-binder-env:
     runs-on: ubuntu-latest
     needs: [trigger]
@@ -50,12 +65,17 @@ jobs:
           (needs.trigger.outputs.is_push_on_default_branch == 'true')
           || (needs.trigger.outputs.is_release == 'true')
         run: |
-          ls
-          echo $BINDER_ENV_REF
           if ${{ needs.trigger.outputs.is_release == 'true' }}; then
             # RELEASE MODE
             # Specify the proper discrete-optimization version
-            sed -i -e "s|\(\s*\)-.*egg=discrete-optimization$|\1- discrete-optimization==${{ needs.build.outputs.do_version }}|" environment.yml
+            sed_replacement_pattern="\1- discrete-optimization==${{ needs.build.outputs.do_version }}"
+            if ${{ github.repository != 'airbus/discrete-optimization' && secrets.TEST_PYPI_API_TOKEN != '' }} == 'true'; then
+              # release to be deployed on TestPyPI
+              sed_replacement_pattern="${sed_replacement_pattern}\n\1- --extra-index-url https://test.pypi.org/simple/"
+            fi
+            sed_command="s|\(\s*\)-.*egg=discrete-optimization$|${sed_replacement_pattern}|"
+            echo $sed_command
+            sed -i -e "$sed_command" environment.yml
             cat environment.yml
             # Commit new environment
             git config user.name "Actions"
@@ -66,7 +86,6 @@ jobs:
             # Revert for the default branch binder env
             git revert HEAD -n
             git commit -m "Revert to binder environment for master branch"
-            echo $BINDER_ENV_REF
           else
             # DEFAULT BRANCH MODE
             # Specify the proper discrete-optimization version (current master sha1)
@@ -78,11 +97,9 @@ jobs:
             git config user.name "Actions"
             git config user.email "actions@github.com"
             git commit environment.yml -m "Update binder environment for default branch"
-            echo $BINDER_ENV_REF
           fi
           # Push binder branch with the updated environment
           git push origin binder
-          echo $BINDER_ENV_REF
 
       - name: Checkout triggering branch to get the script pre-building the binder env
         if: |
@@ -95,8 +112,7 @@ jobs:
           (needs.trigger.outputs.is_push_on_default_branch == 'true')
           || (needs.trigger.outputs.is_release == 'true')
         run: |
-          ls
-          echo $BINDER_ENV_REF
+          echo Triggering binder environment build for ${GITHUB_REPOSITORY}/${BINDER_ENV_REF}
           bash scripts/trigger_binder.sh https://gke.mybinder.org/build/gh/${GITHUB_REPOSITORY}/${BINDER_ENV_REF}
           bash scripts/trigger_binder.sh https://ovh.mybinder.org/build/gh/${GITHUB_REPOSITORY}/${BINDER_ENV_REF}
           bash scripts/trigger_binder.sh https://turing.mybinder.org/build/gh/${GITHUB_REPOSITORY}/${BINDER_ENV_REF}
@@ -105,7 +121,7 @@ jobs:
       - name: Store binder env reference
         id: get_binder_env_ref
         run: |
-          echo $BINDER_ENV_REF
+          echo "binder_env_ref=$BINDER_ENV_REF"
           echo "binder_env_ref=$BINDER_ENV_REF" >> $GITHUB_OUTPUT
 
   build-doc:
@@ -243,7 +259,7 @@ jobs:
     if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     steps:
       - run: echo should work only on default
-  build:
+  build2:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
@@ -269,7 +285,7 @@ jobs:
 
   test:
     runs-on: windows-2022
-    needs: [build]
+    needs: [build2]
     defaults:
       run:
         shell: bash
