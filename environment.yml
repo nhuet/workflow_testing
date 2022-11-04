@@ -1,13 +1,9 @@
-name: nb-skdecide092-py38
+name: nb-do-py3.9
+channels:
+  - defaults
 dependencies:
-  - python=3.8
+  - python=3.9
   - pip
   - pip:
-    - matplotlib
-    - ipywidgets
-    - ipympl
-    - scikit-decide[all]==dev
-    - nbgitpuller
-    - pyvirtualdisplay
-    - PyOpenGL-accelerate
-    - PyOpenGL
+      - git+https://github.com/airbus/discrete-optimization@master#egg=discrete-optimization
+      - nbgitpuller
