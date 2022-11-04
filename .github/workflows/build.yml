@@ -31,6 +31,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     needs: [trigger]
+    outputs:
+      do_version: ${{ steps.get_wheel_version.outputs.version }}
     steps:
       - name: get wheel version and save it
         id: get_wheel_version
