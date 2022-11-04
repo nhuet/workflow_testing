@@ -48,7 +48,7 @@ jobs:
 
   create-binder-env:
     runs-on: ubuntu-latest
-    needs: [trigger]
+    needs: [trigger, build]
     env:
       BINDER_ENV_REF: binder  # default reference: binder branch
     outputs:
