@@ -113,7 +113,7 @@ jobs:
         run: |
           # binder environment repo and branch
           AUTODOC_BINDER_ENV_GH_REPO_NAME="${GITHUB_REPOSITORY}"
-          AUTODOC_BINDER_ENV_GH_BRANCH="$${{ needs.create-binder-env.outputs.binder_env_ref }}"
+          AUTODOC_BINDER_ENV_GH_BRANCH="${{ needs.create-binder-env.outputs.binder_env_ref }}"
           # notebooks source repo and branch depending if it is a commit push or a PR
           if [[ $GITHUB_REF == refs/pull* ]];
           then
