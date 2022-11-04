@@ -70,6 +70,7 @@ jobs:
             # DEFAULT BRANCH MODE
             # Specify the proper discrete-optimization version (current master sha1)
             pip_spec="git+${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}@${GITHUB_SHA}#egg=discrete-optimization"
+            echo $pip_spec
             sed -i -e "s/\(\s*\)-.*\/discrete-optimization@.*/\1- ${pip_spec}/" environment.yml
             # Commit new environment
             git config user.name "Actions"
