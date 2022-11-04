@@ -5,6 +5,5 @@ dependencies:
   - python=3.9
   - pip
   - pip:
-      - discrete-optimization==0.3.14
-      - --extra-index-url https://test.pypi.org/simple/
+      - git+https://github.com/nhuet/workflow_testing@fa1d1bdc1807bcd1a29d57847af748e712bfd195#egg=discrete-optimization
       - nbgitpuller
