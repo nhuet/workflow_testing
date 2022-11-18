@@ -16,6 +16,13 @@ concurrency:
 
 jobs:
 
+  pwd:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          pwd
+          echo $HOME
+
   trigger:
     # store trigger reason
     runs-on: ubuntu-latest
