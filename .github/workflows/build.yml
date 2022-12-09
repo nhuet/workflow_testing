@@ -16,6 +16,44 @@ concurrency:
 
 jobs:
 
+  testing-file-existence:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if coverage report exists
+        id: check-cov
+        run: |
+          if [ -f coverage.xml ]; then 
+            coverage_exists=true
+          else
+            coverage_exists=false
+          fi
+          echo ${coverage_exists}
+          echo "coverage_exists=${coverage_exists}" >> $GITHUB_OUTPUT
+      - name: test output previous step
+        run: |
+          echo ${{ steps.check-cov.outputs.coverage_exists }}
+          echo ${{ steps.check-cov.outputs.coverage_exists == 'true' }}
+      - name: Export coverage report (if existing)
+        if: steps.check-coverage-report.ouputs.coverage_exists == 'true'
+        run: echo "exporting"
+      - name: Check if coverage report exists II
+        id: check-coverage-report
+        run: |
+          touch coverage.xml
+          if [ -f coverage.xml ]; then 
+            coverage_exists=true
+          else
+            coverage_exists=false
+          fi
+          echo ${coverage_exists}
+          echo "coverage_exists=${coverage_exists}" >> $GITHUB_OUTPUT
+      - name: test output previous step
+        run: |
+          echo ${{ steps.check-coverage-report.outputs.coverage_exists }}
+          echo ${{ steps.check-coverage-report.outputs.coverage_exists == 'true' }}
+      - name: Export coverage report (if existing) II
+        if: steps.check-coverage-report.outputs.coverage_exists == 'true'
+        run: echo "exporting"
   pwd:
     runs-on: ubuntu-latest
     steps:
