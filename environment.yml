@@ -5,5 +5,5 @@ dependencies:
   - python=3.9
   - pip
   - pip:
-      - git+https://github.com/nhuet/workflow_testing@c5bb5a797f275eacaf8dd6ba47e3ab711a65402a#egg=discrete-optimization
+      - git+https://github.com/nhuet/workflow_testing@39a2073ad7d2b38f20f9694413eb09b0d1e3b246#egg=discrete-optimization
       - nbgitpuller
