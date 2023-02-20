@@ -35,4 +35,5 @@ jobs:
           bash -c 'exit 12' || ret_code=$?
           if [ $ret_code != 0 ]; then return_code=$ret_code; fi
           echo $return_code
+          exit $return_code
           
