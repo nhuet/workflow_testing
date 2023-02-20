@@ -22,5 +22,17 @@ jobs:
       - name: Script
         run: |
           echo ok
-          bash -c 'exit 12'; echo $?
-          echo ko
+          return_code=0 
+          bash -c 'exit 0'|| ret_code=$?
+          if [ $ret_code != 0 ]; then return_code=$ret_code; fi
+          echo $return_code
+          bash -c 'exit 12' || ret_code=$?
+          if [ $ret_code != 0 ]; then return_code=$ret_code; fi
+          echo $return_code
+          bash -c 'exit 0'|| ret_code=$?
+          if [ $ret_code != 0 ]; then return_code=$ret_code; fi
+          echo $return_code
+          bash -c 'exit 12' || ret_code=$?
+          if [ $ret_code != 0 ]; then return_code=$ret_code; fi
+          echo $return_code
+          
