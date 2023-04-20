@@ -26,7 +26,7 @@ jobs:
       - name: Install dependencies
         run: |
           # preinstall gym==0.21.0 with older pip + --no-use-pep517 because its requirements list is broken
-          python -m pip install pip<23.1  # starting with pip 23.1, gym 0.21.0 is not intallable anymore
+          python -m pip install "pip<23.1"  # starting with pip 23.1, gym 0.21.0 is not intallable anymore
           python -m pip install wheel
           python -m pip install gym==0.21.0 --no-use-pep517
           # install remaining dependencies
