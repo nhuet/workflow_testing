@@ -31,7 +31,7 @@ jobs:
       - name: Install dependencies
         run: |
           # preinstall gym==0.21.0 with legacy method (python setup.py) because its requirements list is broken
-          python -m pip install "pip==23.0.1"  # starting with pip 23.1, gym 0.21.0 is not intallable anymore
+          python -m pip install "pip==22"  # starting with pip 23.1, gym 0.21.0 is not intallable anymore
           python -m pip uninstall -y wheel  # wheel must not be here to fall back directly to python setup.py
           python -m pip install gym==0.21.0 --no-use-pep517
           # install remaining dependencies
