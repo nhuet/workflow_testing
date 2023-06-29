@@ -15,6 +15,24 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+
+  build-toto:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo salut
+
+  build-tata:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo salut tata
+
+  test:
+    needs: [build-*]
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo TEST
+
+
   install-gym:
     strategy:
       fail-fast: false
