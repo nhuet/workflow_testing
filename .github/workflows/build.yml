@@ -54,3 +54,23 @@ jobs:
           echo ${{ matrix.os }}
           echo ${{ matrix.nodeellip }}
           echo ${{ matrix.tf212 }}
+      - name: Pick proper tox env
+        shell: python
+        run: |
+          import os; import platform; import sys; from pathlib import Path
+          platform_mapping = {
+              "Linux": "linux",
+              "Darwin": "macos",
+              "Windows": "win",
+          }
+          pythonversion = f'py{"" if platform.python_implementation() == "CPython" else "py"}3{sys.version_info.minor}'
+          platformversion=platform_mapping[platform.system()]
+          toxenv = f"{pythonversion}-{platformversion}"
+          if "${{ matrix.nodeellip }}" == "true":
+              toxenv += "-nodeellip"
+          if "${{ matrix.tf212 }}" == "true":
+              toxenv += "-tf212"
+          set_toxenv_cmd = f"TOXENV={toxenv}"
+          print(f"Picked: {toxenv}")
+          with Path(os.environ["GITHUB_ENV"]).open("ta") as file_handler:
+               file_handler.write(set_toxenv_cmd)
