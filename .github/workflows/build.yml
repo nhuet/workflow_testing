@@ -54,6 +54,12 @@ jobs:
           echo ${{ matrix.os }}
           echo ${{ matrix.nodeellip }}
           echo ${{ matrix.tf212 }}
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
       - name: Pick proper tox env
         shell: python
         run: |
