@@ -16,6 +16,20 @@ concurrency:
 
 jobs:
 
+  replacetoto:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: replace toto by coco
+        run: |
+          shopt -s globstar  # enable **
+          sed -i -e "s|toto|coco|g" tutorials/**/*.txt
+          git config user.name "Actions"
+          git config user.email "actions@github.com"
+          git commit tutorials -m "Replace toto by coco in tutorials"
+          git push
+          
+
   tests:
     strategy:
       matrix:
