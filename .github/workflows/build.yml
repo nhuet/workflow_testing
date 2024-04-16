@@ -18,7 +18,14 @@ jobs:
 
   testing-file-existence:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        minizinc_prerequisites_cmdline: [""]
     steps:
+      - name: prerequisites
+        run: |
+          ${{ matrix.minizinc_prerequisites_cmdline }}
       - name: Check if coverage report exists
         id: check-cov
         run: |
