@@ -39,6 +39,13 @@ jobs:
           echo is_release=${{ needs.trigger.outputs.is_release }}
           echo is_push_on_default_branch=${{ needs.trigger.outputs.is_push_on_default_branch }}
           echo is_schedule=${{ needs.trigger.outputs.is_schedule }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.8
+      - shell: python3 {0}
+        run: |
+          if "${{ needs.trigger.outputs.is_release == 'true' || needs.trigger.outputs.is_push_on_default_branch == 'true' || needs.trigger.outputs.is_schedule == 'true' }}" == "false":
+            print("on a dev branch")
 
   only-on-master:
     needs: [trigger]
