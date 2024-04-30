@@ -29,6 +29,28 @@ jobs:
           echo "is_push_on_default_branch=${{ (github.event_name == 'push') && (github.ref == format('refs/heads/{0}', github.event.repository.default_branch)) }}" >> $GITHUB_OUTPUT
           echo "is_schedule=${{ github.event_name == 'schedule' }}" >> $GITHUB_OUTPUT
 
+  get-release-version:
+    needs: trigger
+    runs-on: ubuntu-latest
+    outputs:
+      skdecide-version: ${{ steps.get-version.outputs.skdecide_version }}
+      tag-name: ${{ steps.get-version.outputs.tag_name }}
+    steps:
+      - id: get-version
+        if: needs.trigger.outputs.is_release == 'true'
+        run: |
+          tag_name=${GITHUB_REF/refs\/tags\//}  # stripping "refs/tags/"
+          skdecide_version=${tag_name/v/}  # stripping "v"
+          echo "tag_name=${tag_name}" >> $GITHUB_OUTPUT
+          echo "skdecide_version=${skdecide_version}" >> $GITHUB_OUTPUT
+
+  diplay-version:
+    needs: get-release-version
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo version: ${{ needs.get-release-version.outputs.skdecide-version }}
+
   display-trigger:
     needs: trigger
     runs-on: ubuntu-latest
