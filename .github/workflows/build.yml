@@ -23,8 +23,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - run: | 
-          python -c "import sys; print(sys.argv[-1])" $(lscpu | grep Architecture)
-          echo $(python -c "import sys; print(sys.argv[-1])" $(lscpu | grep Architecture))
+          uname -a
+          uname -m
 
   trigger:
     # store trigger reason
