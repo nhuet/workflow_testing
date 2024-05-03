@@ -105,3 +105,12 @@ jobs:
     if: always()
     steps:
       - run: echo yo ${{ needs.only-on-master.outputs.notebooks-branch }}
+
+  deploy-doc:
+    uses: ./.github/workflows/deploy-doc.yml
+    with:
+      doc-version: 0.13.0
+
+  deploy-doc-2:
+    uses: ./.github/workflows/deploy-doc.yml
+    
