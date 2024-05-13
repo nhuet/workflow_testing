@@ -18,14 +18,17 @@ jobs:
   get-archi:
     strategy:
       matrix:
-        python-version: [3.8, 3.9, 3.10]
-        include:
-          - os: macos-latest
-            arch: arm64
+        python-version: ["3.8", "3.9", "3.10"]
+        os: ["macos-latest", "macos-12"]
+        arch: ["arm64", "x86_64"]
+        exclude:
           - os: macos-12
+            arch: arm64
+          - os: macos-latest
             arch: x86_64
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
       - run: | 
+          echo ${{ matrix }}
           uname -a
