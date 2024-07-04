@@ -15,20 +15,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  get-archi:
-    strategy:
-      matrix:
-        python-version: ["3.8", "3.9", "3.10"]
-        os: ["macos-latest", "macos-12"]
-        arch: ["arm64", "x86_64"]
-        exclude:
-          - os: macos-12
-            arch: arm64
-          - os: macos-latest
-            arch: x86_64
-      fail-fast: false
-    runs-on: ${{ matrix.os }}
+  test-sb3:
+    runs-on: windows-latest
     steps:
-      - run: | 
-          echo ${{ matrix }}
-          uname -a
+      - uses: actions/checkout@v4
+      - run: |
+          python -m pip install gymnasium stable-baselines3 "numpy>=2.0" 
+          python ex.py        
