@@ -18,17 +18,17 @@ jobs:
   get-archi:
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10"]
-        os: ["macos-latest", "macos-12"]
-        arch: ["arm64", "x86_64"]
-        exclude:
-          - os: macos-12
-            arch: arm64
-          - os: macos-latest
-            arch: x86_64
+        python-version: ["3.9", "3.12"]
+        os: ["macos-latest", "macos-12", "windows-latest", "ubuntu-latest"]
       fail-fast: false
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     steps:
       - run: | 
           echo ${{ matrix }}
           uname -a
+          if [ "${{ startsWith(matrix.os, 'windows') || (startsWith(matrix.os, 'macos') && matrix.python-version == '3.12') }}" == false ]; then
+            echo "install toulbar2"
+          fi
