@@ -19,16 +19,27 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.9", "3.12"]
-        os: ["macos-latest", "macos-12", "windows-latest", "ubuntu-latest"]
+        os: ["macos-latest", "macos-13", "windows-latest", "ubuntu-latest"]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     defaults:
       run:
         shell: bash
     steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
       - run: | 
           echo ${{ matrix }}
           uname -a
           if [ "${{ startsWith(matrix.os, 'windows') || (startsWith(matrix.os, 'macos') && matrix.python-version == '3.12') }}" == false ]; then
             echo "install toulbar2"
           fi
+
+      - run: | 
+          pip install matplotlib
+          python -c "import matplotlib; matplotlib.use('agg'); import matplotlib.pyplot as plt; plt.subplots(); print('agg=OK')"
+          python -c "import matplotlib; matplotlib.use('tkagg'); import matplotlib.pyplot as plt; plt.subplots(); print('tkagg=OK')"
+          
