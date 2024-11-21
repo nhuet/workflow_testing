@@ -27,5 +27,7 @@ jobs:
     steps:
       - name: install pkgconf
         run: | 
+          brew list
+          brew update
           brew upgrade pkgconf
           brew install eccodes
