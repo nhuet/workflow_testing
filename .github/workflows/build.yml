@@ -27,7 +27,7 @@ jobs:
     steps:
       - name: install pkgconf
         run: | 
-          brew list
-          brew update
-          brew upgrade pkgconf
+          if [[ $(brew list) == *"pkg-config"* ]]; then
+            brew upgrade pkg-config
+          fi
           brew install eccodes
