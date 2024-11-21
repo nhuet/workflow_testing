@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  get-archi:
+  install-eccodes:
     strategy:
       matrix:
         os: ["macos-latest"]
@@ -27,7 +27,8 @@ jobs:
     steps:
       - name: install pkgconf
         run: | 
+          
           if [[ $(brew list) == *"pkg-config"* ]]; then
-            brew upgrade pkg-config
+            brew uninstall $(brew list | grep pkg-config)
           fi
           brew install eccodes
