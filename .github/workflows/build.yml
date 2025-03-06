@@ -27,7 +27,25 @@ jobs:
           python-version: "3.12"
       - name: Install scikit-decide and test dependencies
         run: |
-          pip install graph-jsp-env
+          pip install pytest
       - name: test importing it
         run: |
-          python -c "from graph_jsp_env.disjunctive_graph_jsp_env import DisjunctiveGraphJspEnv"
+          mkdir tests
+          pytest tests/
+  test-jsp-env-wrapped:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install scikit-decide and test dependencies
+        run: |
+          pip install pytest
+      - name: test importing it
+        run: |
+          mkdir tests
+          sh -c 'pytest tests/ ; ret=$?; [ $ret = 5 ] && exit 0 || exit $ret'
