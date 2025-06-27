@@ -15,31 +15,50 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  get-archi:
+  install-mzn:
     strategy:
       matrix:
-        python-version: ["3.9", "3.12"]
-        os: ["macos-latest", "macos-13", "windows-latest", "ubuntu-latest"]
+        python-version: [3.12"]
+        os: ["windows-latest"]
+        include:
+          - os: "windows-latest"
+            minizinc_config_cmdline: export PATH=$PATH:~/AppData/Local/Programs/MiniZinc
+            minizinc_cache_path: AppData/Local/Programs/MiniZinc
+            minizinc_url: https://github.com/MiniZinc/MiniZincIDE/releases/download/2.8.5/MiniZincIDE-2.8.5-bundled-setup-win64.exe
+            minizinc_downloaded_filepath: minizinc_setup.exe
+            minizinc_install_cmdline: cmd //c "minizinc_setup.exe /verysilent /currentuser /norestart /suppressmsgboxes /sp"
+            minizinc_prerequisites_cmdline: ""
       fail-fast: false
     runs-on: ${{ matrix.os }}
     defaults:
       run:
         shell: bash
     steps:
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Create bin/
+        run: mkdir -p bin
+      - name: Minizinc prerequisites
+        run: |
+          ${{ matrix.minizinc_prerequisites_cmdline }}
+      - name: get MiniZinc path to cache
+        id: get-mzn-cache-path
+        run: |
+          echo "path=${{ matrix.minizinc_cache_path }}" >> $GITHUB_OUTPUT  # expands variables
+      - name: Restore MiniZinc cache
+        id: cache-minizinc
+        uses: actions/cache@v4
         with:
-          python-version: ${{ matrix.python-version }}
-
-      - run: | 
-          echo ${{ matrix }}
-          uname -a
-          if [ "${{ startsWith(matrix.os, 'windows') || (startsWith(matrix.os, 'macos') && matrix.python-version == '3.12') }}" == false ]; then
-            echo "install toulbar2"
-          fi
-
-      - run: | 
-          pip install matplotlib
-          python -c "import matplotlib; matplotlib.use('agg'); import matplotlib.pyplot as plt; plt.subplots(); print('agg=OK')"
-          python -c "import matplotlib; matplotlib.use('tkagg'); import matplotlib.pyplot as plt; plt.subplots(); print('tkagg=OK')"
+          path: ${{ steps.get-mzn-cache-path.outputs.path }}
+          key: ${{ matrix.minizinc_url }}
+      - name: Download MiniZinc
+        if: steps.cache-minizinc.outputs.cache-hit != 'true'
+        run: |
+          curl -o "${{ matrix.minizinc_downloaded_filepath }}" -L ${{ matrix.minizinc_url }}
+      - name: Install MiniZinc
+        if: steps.cache-minizinc.outputs.cache-hit != 'true'
+        run: |
+          ${{ matrix.minizinc_install_cmdline }}
+      - name: Test minizinc install
+        run: |
+          ${{ matrix.minizinc_config_cmdline }}
+          minizinc --version
           
