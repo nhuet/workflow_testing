@@ -15,31 +15,141 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  get-archi:
-    strategy:
-      matrix:
-        python-version: ["3.9", "3.12"]
-        os: ["macos-latest", "macos-13", "windows-latest", "ubuntu-latest"]
-      fail-fast: false
-    runs-on: ${{ matrix.os }}
+  upload-release:
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
     steps:
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: create "asset"
+        run: date > asset.txt
+
+      - uses: actions/github-script@v7
+        id: asset
         with:
-          python-version: ${{ matrix.python-version }}
+          script: |
+            const fs = require('fs');
 
-      - run: | 
-          echo ${{ matrix }}
-          uname -a
-          if [ "${{ startsWith(matrix.os, 'windows') || (startsWith(matrix.os, 'macos') && matrix.python-version == '3.12') }}" == false ]; then
-            echo "install toulbar2"
-          fi
+            // Get the ref for master
+            const master_sha = '${{ github.sha }}';
+            console.log(`master reference ${master_sha}`);
 
-      - run: | 
-          pip install matplotlib
-          python -c "import matplotlib; matplotlib.use('agg'); import matplotlib.pyplot as plt; plt.subplots(); print('agg=OK')"
-          python -c "import matplotlib; matplotlib.use('tkagg'); import matplotlib.pyplot as plt; plt.subplots(); print('tkagg=OK')"
-          
+            // Retrieve ref for tag `nightly`
+            let ref_nightly = null;
+            try {
+              ref_nightly = await github.rest.git.getRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: 'tags/nightly',
+              });
+
+              if (ref_nightly.data.object.sha === master_sha) {
+                return '';
+              }
+            } catch (err) {
+              // The tag does not exist so let's create it
+              ref_nightly = await github.rest.git.createRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: 'refs/tags/nightly',
+                sha: master_sha,
+              });
+            }
+
+            // Call the GitHub API to get a release by tag
+            let release = null;
+            try {
+              release = await github.rest.repos.getReleaseByTag({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag: 'nightly',
+              });
+              console.log(`Found release ${release.data.tag_name} ${release.data.draft} ${release.data.prerelease}`);
+            } catch (err) {
+              console.log(`Release 'nightly' not found`);
+
+              // If the release doesn't exist, create it
+              release = await github.rest.repos.createRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag_name: 'nightly',
+                name: 'nightly',
+                body: 'Nightly release crafted with ♥️ somewhere on 🌎',
+                draft: false,
+                prerelease: true,
+              });
+
+              console.log(`Created release ${release.data.tag_name} ${release.data.draft} ${release.data.prerelease}`);
+            }
+            console.log(`Release does exist with tag ${release.data.tag_name} [${release.data.draft} ${release.data.prerelease}]`);
+
+            // At this stage both tag & release exist
+
+            // Update nightly tag
+            await github.rest.git.updateRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'tags/nightly',
+              sha: master_sha,
+              force: true,
+            });
+            console.log(`Updated tag with sha ${ref_nightly.data.object.sha}`);
+
+            // Update the release
+            await github.rest.repos.updateRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: release.data.id,
+              tag_name: 'nightly',
+              name: 'nightly',
+              body: 'Nightly release crafted with ♥️ somewhere on 🌎',
+              draft: false,
+              prerelease: true,
+            });
+            console.log(`Updated ${release.data.tag_name} nightly release  ${release.data.draft} ${release.data.prerelease}`);
+
+            // Get all tags and keep the newest one starting by v
+            let newest_tag = { name: 'v0.0.0' };
+
+            const tags = await github.rest.repos.listTags({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+
+            // Keep latest tag
+            for (const tag of tags.data) {
+              if (tag.name.startsWith('v')) {
+                if (tag.name.localeCompare(newest_tag.name, undefined, { numeric: true}) > 0) {
+                  newest_tag = tag;
+                }
+              }
+            }
+            console.log(`Previous release has tag ${newest_tag.name} → ${newest_tag.commit.sha}`);
+
+            // Count all commits between HEAD and newest tag
+            // Limited to 250 commits
+            const distance = await github.rest.repos.compareCommitsWithBasehead({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              basehead: `${newest_tag.commit.sha}...${master_sha}`,
+            }).then(d => d.data.total_commits);
+
+            // Zip a zip file from dist directory
+            let release_name = `nightly_${distance}_${master_sha.substring(0,8)}` + '.txt';
+            console.log(`Release file name: ${release_name}`);
+            fs.renameSync('asset.txt', release_name);
+
+            // Upload the zip file to GitHub
+            const uploadedAsset = await github.rest.repos.uploadReleaseAsset({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: release.data.id,
+              name: release_name,
+              data: fs.readFileSync(release_name),
+              headers: {
+                'content-type': 'text/plain',
+              },
+            });
+
+            return uploadedAsset.data.browser_download_url;
+          result-encoding: string
