@@ -41,6 +41,10 @@ jobs:
           if "${{ matrix.autolirpa }}" == "autolirpa":
               toxenv += "-autolirpa"
           print(toxenv)
+      - run: |
+          if [[ "${{ matrix.autolirpa }}" != "autolirpa"  ]]; then
+            echo python -m tox -e convert-doc-to-test  # extract code blocks from doc to test them
+          fi
           
 
           
