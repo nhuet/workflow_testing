@@ -24,9 +24,9 @@ jobs:
         autolirpa : [ "", "autolirpa" ]
         exclude:
           - backend: "tf"
-            autolirpa: true
+            autolirpa: "autolirpa"
           - backend: "jax"
-            autolirpa: true
+            autolirpa: "autolirpa"
       fail-fast: false
     runs-on: ${{ matrix.os }}
     defaults:
