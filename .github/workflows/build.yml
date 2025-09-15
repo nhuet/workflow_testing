@@ -34,12 +34,14 @@ jobs:
         shell: bash
     steps:
 
-      - run: | 
-          echo ${{ matrix }}
-          toxenv=${{ matrix.python-version }}-${{ matrix.os }}-${{ matrix.backend }}
-          echo ${{ matrix.autolirpa }}
+      - name: Pick proper tox env
+        shell: python
+        run: | 
+          toxenv="${{ matrix.python-version }}-${{ matrix.os }}-${{ matrix.backend }}"
+          print(${{ matrix.autolirpa }})
           if "${{ matrix.autolirpa }}" == "autolirpa":
               toxenv += "-autolirpa"
-          echo $toxenv
+          print($toxenv)
+          
 
           
