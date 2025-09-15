@@ -18,28 +18,23 @@ jobs:
   get-archi:
     strategy:
       matrix:
-        python-version: ["3.9", "3.12"]
-        os: ["macos-latest", "macos-13", "windows-latest", "ubuntu-latest"]
+        python-version: ["3.9", "3.11"]
+        os: ["macos-latest", "windows-latest", "ubuntu-latest"]
+        backend: [ "tf", "torch", "jax" ]
+        include:
+          - backend: "torch"
+            autolirpa: true
       fail-fast: false
     runs-on: ${{ matrix.os }}
     defaults:
       run:
         shell: bash
     steps:
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
 
       - run: | 
           echo ${{ matrix }}
-          uname -a
-          if [ "${{ startsWith(matrix.os, 'windows') || (startsWith(matrix.os, 'macos') && matrix.python-version == '3.12') }}" == false ]; then
-            echo "install toulbar2"
-          fi
+          echo ${{ matrix.python-version }}-${{ matrix.os }}-${{ matrix.backend }}
+          echo ${{ matrix.autolirpa }}
+          
 
-      - run: | 
-          pip install matplotlib
-          python -c "import matplotlib; matplotlib.use('agg'); import matplotlib.pyplot as plt; plt.subplots(); print('agg=OK')"
-          python -c "import matplotlib; matplotlib.use('tkagg'); import matplotlib.pyplot as plt; plt.subplots(); print('tkagg=OK')"
           
