@@ -21,10 +21,12 @@ jobs:
         python-version: ["3.9", "3.11"]
         os: ["macos-latest", "windows-latest", "ubuntu-latest"]
         backend: [ "tf", "torch", "jax" ]
-        autolirpa: [ false ]
-#        include:
-#          - backend: "torch"
-#            autolirpa: true
+        autolirpa : [ false, true ]
+        exclude:
+          - backend: "tf"
+            autolirpa: true
+          - backend: "jax"
+            autolirpa: true
       fail-fast: false
     runs-on: ${{ matrix.os }}
     defaults:
