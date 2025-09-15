@@ -38,10 +38,9 @@ jobs:
         shell: python
         run: | 
           toxenv="${{ matrix.python-version }}-${{ matrix.os }}-${{ matrix.backend }}"
-          print(${{ matrix.autolirpa }})
           if "${{ matrix.autolirpa }}" == "autolirpa":
               toxenv += "-autolirpa"
-          print($toxenv)
+          print(toxenv)
           
 
           
