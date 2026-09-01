@@ -36,8 +36,10 @@ jobs:
           cache-dependency-path: pyproject.toml
       - name: install deps
         run: pip install "pytest<9.1.0"
+      - name: Test all tests
+        run: pytest --co  tests
       - name: Test normal tests
-        run: pytest --co --ignore-glob=tests/**/test_*non_regression.py
+        run: pytest --co --ignore-glob=tests/**/test_*non_regression.py tests
       - name: Test non-regression tests
-        run: pytest --co tests/**/test_*non_regression.py
+        run: pytest --co $(python tests/find_non_regression_tests.py)
 
