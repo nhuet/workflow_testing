@@ -41,12 +41,15 @@ jobs:
         run: pytest --co  tests
       - name: Test normal tests
         run: pytest --co --ignore-glob=tests/**/test_*non_regression.py tests
+      - name: Test on windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          ls /d/a/workflow_testing/workflow_testing/tests/a/test_a_non_regression.py
+          ls 'D:\a\workflow_testing\workflow_testing'
       - name: Test non-regression tests
         run: |
           non_regression_test_files=$(python tests/find_non_regression_tests.py)
           echo $non_regression_test_files
-          ls tests/**/test_*non_regression.py
-          shopt -s globstar  # enable **
           ls tests/**/test_*non_regression.py
           pwd
           ls $non_regression_test_files
