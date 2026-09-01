@@ -17,6 +17,7 @@ concurrency:
 jobs:
   tests:
     strategy:
+      fail-fast: false
       matrix:
         os: ["macos-latest", "windows-latest", "ubuntu-latest"]
         python-version: ["3.10", "3.13"]
@@ -41,5 +42,14 @@ jobs:
       - name: Test normal tests
         run: pytest --co --ignore-glob=tests/**/test_*non_regression.py tests
       - name: Test non-regression tests
-        run: pytest --co $(python tests/find_non_regression_tests.py)
+        run: |
+          non_regression_test_files=$(python tests/find_non_regression_tests.py)
+          echo $non_regression_test_files
+          ls tests/**/test_*non_regression.py
+          shopt -s globstar  # enable **
+          ls tests/**/test_*non_regression.py
+          pwd
+          ls $non_regression_test_files
+          
+          pytest --co $non_regression_test_files
 
