@@ -15,5 +15,4 @@ test_dir = os.path.dirname(__file__)
 
 
 if __name__ == "__main__":
-    for file in glob.glob(f"{test_dir}/**/test_*non_regression.py", recursive=True):
-        print(file)
+    print(" ".join(glob.glob(f"{test_dir}/**/test_*non_regression.py", recursive=True)))
