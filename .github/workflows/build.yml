@@ -15,36 +15,29 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  get-archi:
+  tests:
     strategy:
       matrix:
-        python-version: ["3.9", "3.11"]
         os: ["macos-latest", "windows-latest", "ubuntu-latest"]
-        backend: [ "tf", "torch", "jax" ]
-        autolirpa : [ "", "autolirpa" ]
-        exclude:
-          - backend: "tf"
-            autolirpa: "autolirpa"
-          - backend: "jax"
-            autolirpa: "autolirpa"
-      fail-fast: false
+        python-version: ["3.10", "3.13"]
+
     runs-on: ${{ matrix.os }}
     defaults:
       run:
         shell: bash
     steps:
+      - name: Checkout discrete-optimization source code
+        uses: actions/checkout@v6
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+          cache-dependency-path: pyproject.toml
+      - name: install deps
+        run: pip install "pytest<9.1.0"
+      - name: Test normal tests
+        run: pytest --co --ignore-glob=tests/**/test_*non_regression.py
+      - name: Test non-regression tests
+        run: pytest --co tests/**/test_*non_regression.py
 
-      - name: Pick proper tox env
-        shell: python
-        run: | 
-          toxenv="${{ matrix.python-version }}-${{ matrix.os }}-${{ matrix.backend }}"
-          if "${{ matrix.autolirpa }}" == "autolirpa":
-              toxenv += "-autolirpa"
-          print(toxenv)
-      - run: |
-          if [[ "${{ matrix.autolirpa }}" != "autolirpa"  ]]; then
-            echo python -m tox -e convert-doc-to-test  # extract code blocks from doc to test them
-          fi
-          
-
-          
